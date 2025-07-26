@@ -22,7 +22,7 @@ target_link_libraries(CoolProject PRIVATE LibCoro::LibCoro)
 
 # examples
 
-## Task<T>
+## Task
 
 ```c++
 #include <libcoro/Task.hpp>
@@ -94,7 +94,7 @@ int main()
 
 ```
 
-## Generator<T>
+## Generator
 
 ```c++
 #include <libcoro/Generator.hpp>

@@ -32,28 +32,28 @@ target_link_libraries(CoolProject PRIVATE LibCoro::LibCoro)
 
 using namespace std::literals;
 
-Task<void> prepare_eggs_async()
+libcoro::Task<void> prepare_eggs_async()
 {
     std::cout << "preparing eggs...\n";
     co_await libcoro::Task<>::delay(2s);
     co_return {};
 }
 
-Task<void> prepare_bacon_async()
+libcoro::Task<void> prepare_bacon_async()
 {
     std::cout << "preparing bacon...\n";
     co_await libcoro::Task<>::delay(1s);
     co_return {};
 }
 
-Task<void> prepare_toast_async()
+libcoro::Task<void> prepare_toast_async()
 {
     std::cout << "preparing toast...\n";
     co_await libcoro::Task<>::delay(2s);
     co_return {};
 }
 
-Task<void> prepare_breakfast_async()
+libcoro::Task<void> prepare_breakfast_async()
 {
     auto prepareEggsTask = prepare_eggs_async();
     auto prepareBaconTask = prepare_bacon_async();

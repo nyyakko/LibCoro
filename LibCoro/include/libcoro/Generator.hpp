@@ -1,6 +1,7 @@
 #pragma once
 
 #include <coroutine>
+#include <utility>
 
 namespace libcoro {
 
@@ -14,7 +15,7 @@ private:
     struct Iterator
     {
         auto operator++() { generator.handle_.resume(); }
-        auto operator*() { return generator.handle_.promise().result; }
+        auto operator*() { return std::move(generator.handle_.promise().result); }
         auto operator!=(auto const&) { return !generator.handle_.done(); }
         Generator& generator;
     };
@@ -30,6 +31,8 @@ public:
     {
         handle_.destroy();
     }
+
+    T&& next() { handle_.resume(); return std::move(handle_.promise().result); }
 
     Iterator begin() { return {*this}; }
     Iterator end() { return {*this}; }
@@ -51,7 +54,7 @@ struct Generator<T>::promise_type
 
     auto yield_value(auto&& value)
     {
-        result = value;
+        result = std::forward<decltype(value)>(value);
         return std::suspend_always {};
     }
 

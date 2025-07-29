@@ -35,7 +35,7 @@ public:
         handle_.destroy();
     }
 
-    T&& next() { handle_.resume(); return std::move(handle_.promise().result); }
+    auto&& next() { handle_.resume(); return std::move(handle_.promise().result); }
 
     Iterator begin() { return {*this}; }
     Iterator end() { return {*this}; }

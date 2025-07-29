@@ -55,7 +55,7 @@ struct Generator<T>::promise_type
 
     auto return_void() {}
 
-    auto yield_value(auto&& value)
+    auto yield_value(value_t&& value)
     {
         result = std::forward<decltype(value)>(value);
         return std::suspend_always {};

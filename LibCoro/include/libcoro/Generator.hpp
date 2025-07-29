@@ -2,6 +2,7 @@
 
 #include <coroutine>
 #include <utility>
+#include <variant>
 
 namespace libcoro {
 
@@ -9,6 +10,8 @@ template <class T>
 class Generator
 {
 public:
+    using value_t = std::conditional_t<std::is_void_v<T>, std::monostate, T>;
+
     struct promise_type;
 
 private:
@@ -44,7 +47,7 @@ private:
 template <class T>
 struct Generator<T>::promise_type
 {
-    T result;
+    value_t result;
 
     auto get_return_object() { return Generator(this); }
 

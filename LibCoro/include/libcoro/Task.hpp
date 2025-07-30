@@ -181,7 +181,8 @@ struct Task<T>::promise_type
     auto get_return_object() { return Task(this); }
     auto unhandled_exception() noexcept {}
 
-    auto return_value(value_t&& newValue) { result = std::move(newValue); }
+    template <class U>
+    auto return_value(U&& newValue) { result = std::forward<U>(newValue); }
 
     auto initial_suspend() noexcept
     {

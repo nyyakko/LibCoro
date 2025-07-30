@@ -182,7 +182,9 @@ struct Task<T>::promise_type
     auto unhandled_exception() noexcept {}
 
     template <class U>
-    auto return_value(U&& newValue) { result = std::forward<U>(newValue); }
+    auto return_value(U&& value) { result = std::forward<U>(value); }
+
+    auto return_value(value_t&& value) { result = std::move(value); }
 
     auto initial_suspend() noexcept
     {

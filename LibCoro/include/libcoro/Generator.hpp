@@ -62,6 +62,12 @@ struct Generator<T>::promise_type
         return std::suspend_always {};
     }
 
+    auto yield_value(value_t&& value)
+    {
+        result = std::move(value);
+        return std::suspend_always {};
+    }
+
     auto initial_suspend() noexcept { return std::suspend_never {}; }
     auto final_suspend() noexcept { return std::suspend_always {}; }
 };

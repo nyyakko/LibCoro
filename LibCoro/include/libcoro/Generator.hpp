@@ -35,10 +35,10 @@ public:
         handle_.destroy();
     }
 
-    auto&& next() { handle_.resume(); return std::move(handle_.promise().result); }
+    auto&& next() { return handle_.resume(), std::move(handle_.promise().result); }
 
-    Iterator begin() { return {*this}; }
-    Iterator end() { return {*this}; }
+    Iterator begin() { return next(), Iterator(*this); }
+    Iterator end() { return Iterator(*this); }
 
 private:
     std::coroutine_handle<promise_type> handle_;

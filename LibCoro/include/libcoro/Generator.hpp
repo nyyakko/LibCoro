@@ -17,7 +17,7 @@ public:
 private:
     struct Iterator
     {
-        auto operator++() { generator.handle_.resume(); }
+        auto operator++() { if (!generator.handle_.done()) generator.handle_.resume(); }
         auto operator*() { return std::move(generator.handle_.promise().result); }
         auto operator!=(auto const&) { return !generator.handle_.done(); }
         Generator& generator;

@@ -115,7 +115,9 @@ public:
         return the;
     }
 
-    auto notify()
+    void start();
+
+    void notify()
     {
         std::scoped_lock lock(mutex_);
         state_ = State::RUNNING;
@@ -123,7 +125,7 @@ public:
     }
 
     template <class T>
-    auto schedule(this auto& self, libcoro::Task<T> task)
+    void schedule(this auto& self, libcoro::Task<T> task)
     {
         self.tasks_.with([&] (auto& tasks) {
             tasks.push_back(std::shared_ptr<Task>(new TaskImpl(std::move(task))));
@@ -132,19 +134,20 @@ public:
         self.notify();
     }
 
-    auto schedule(this auto& self, auto x, auto ... xs)
+    void schedule(this auto& self, auto x, auto ... xs)
     {
-        std::apply([&] (auto ... xs) {
+        std::apply([&] (auto&& ... xs) {
             self.tasks_.with([&] (auto& tasks) {
                 (tasks.push_back(std::shared_ptr<Task>(new TaskImpl(std::move(xs)))), ...);
             });
         }, std::make_tuple(x, xs...));
+
         self.notify();
     }
 
     auto find_task(std::coroutine_handle<> task)
     {
-        return tasks_.with([&] (auto& tasks) {
+        return tasks_.with([&] (auto const& tasks) {
             return std::find_if(tasks.begin(), tasks.end(), [&] (auto const& current) {
                 return current->handle() == task;
             });
@@ -152,16 +155,14 @@ public:
     }
 
     template <class T>
-    auto is_scheduled(libcoro::Task<T> const& task)
+    bool is_scheduled(libcoro::Task<T> const& task)
     {
-        return tasks_.with([&] (auto& tasks) {
+        return tasks_.with([&] (auto const& tasks) {
             return std::find_if(tasks.begin(), tasks.end(), [&] (auto const& current) {
                 return current->handle() == task.handle();
             }) != tasks.end();
         });
     }
-
-    void start();
 
 private:
     BS::thread_pool<> pool_;
@@ -182,9 +183,16 @@ struct Task<T>::promise_type
     auto unhandled_exception() noexcept {}
 
     template <class U>
-    auto return_value(U&& value) { result = std::forward<U>(value); }
+    auto return_value(U&& value)
+        requires std::constructible_from<value_t, U>
+    {
+        result = std::forward<U>(value);
+    }
 
-    auto return_value(value_t&& value) { result = std::move(value); }
+    auto return_value(value_t&& value)
+    {
+        result = std::move(value);
+    }
 
     auto initial_suspend() noexcept
     {

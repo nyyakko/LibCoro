@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <coroutine>
 #include <utility>
 #include <variant>
@@ -50,13 +51,13 @@ struct Generator<T>::promise_type
     value_t result;
 
     auto get_return_object() { return Generator(this); }
-
     auto unhandled_exception() noexcept {}
 
     auto return_void() {}
 
     template <class U>
     auto yield_value(U&& value)
+        requires std::constructible_from<value_t, U>
     {
         result = std::forward<U>(value);
         return std::suspend_always {};

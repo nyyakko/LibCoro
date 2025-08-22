@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+namespace core {
+
 template <class T>
 class MutexProtected
 {
@@ -11,12 +13,23 @@ public:
         , mutex_ {}
     {}
 
+    MutexProtected(MutexProtected&& that)
+        : data_(std::move(that.data_))
+        , mutex_{}
+    {}
+
+    MutexProtected& operator=(MutexProtected&& that)
+    {
+        this->data_ = std::move(that);
+        return *this;
+    }
+
     MutexProtected(T&& data)
         : data_(std::move(data))
         , mutex_ {}
     {}
 
-    auto with(auto&& functor)
+    decltype(auto) with(auto&& functor)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         return functor(data_);
@@ -27,3 +40,4 @@ private:
     std::mutex mutex_;
 };
 
+}

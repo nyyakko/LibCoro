@@ -106,6 +106,8 @@ import std;
     #endif
 #endif
 
+namespace core {
+
 /**
  * @brief A namespace used by Barak Shoshany's projects.
  */
@@ -2371,3 +2373,5 @@ using binary_semaphore = counting_semaphore<1>;
 #endif
 } // namespace BS
 #endif // BS_THREAD_POOL_HPP
+
+}

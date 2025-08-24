@@ -5,10 +5,15 @@
 
 void libcoro::Scheduler::start()
 {
-    while (state_ != State::STOPPED)
+    while (true)
     {
         std::unique_lock lock(mutex_);
-        condition_.wait(lock, [&] () { return state_ == State::RUNNING; });
+        condition_.wait(lock, [&] () { return state_ == State::RUNNING || state_ == State::STOPPED; });
+
+        if (state_ == State::STOPPED)
+        {
+            break;
+        }
 
         auto tasks = tasks_.with([] (std::vector<std::shared_ptr<Task>>& tasks) {
             std::vector<std::shared_ptr<Task>> result {};

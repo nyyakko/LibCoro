@@ -168,7 +168,7 @@ public:
 private:
     core::BS::thread_pool<> pool_;
     core::MutexProtected<std::vector<std::shared_ptr<Task>>> tasks_;
-    State state_;
+    core::MutexProtected<State> state_;
     std::mutex mutex_;
     std::condition_variable condition_;
 };

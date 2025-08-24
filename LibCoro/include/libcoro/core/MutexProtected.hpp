@@ -20,7 +20,7 @@ public:
 
     MutexProtected& operator=(MutexProtected&& that)
     {
-        this->data_ = std::move(that);
+        this->data_ = std::move(that.data_);
         return *this;
     }
 

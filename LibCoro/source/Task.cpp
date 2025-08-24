@@ -8,9 +8,11 @@ void libcoro::Scheduler::start()
     while (true)
     {
         std::unique_lock lock(mutex_);
-        condition_.wait(lock, [&] () { return state_ == State::RUNNING || state_ == State::STOPPED; });
+        condition_.wait(lock, [&] () {
+            return state_.with([] (auto state) { return state == State::RUNNING || state == State::STOPPED; });
+        });
 
-        if (state_ == State::STOPPED)
+        if (state_.with([] (auto state) { return state == State::STOPPED; }))
         {
             break;
         }

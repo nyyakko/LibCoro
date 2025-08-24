@@ -133,7 +133,7 @@ public:
             tasks.push_back(std::shared_ptr<Task>(new TaskImpl(std::move(task))));
         });
 
-        self.notify();
+        self.notify(State::RUNNING);
     }
 
     void schedule(this auto& self, auto x, auto ... xs)
@@ -144,7 +144,7 @@ public:
             });
         }, std::make_tuple(x, xs...));
 
-        self.notify();
+        self.notify(State::RUNNING);
     }
 
     auto find_task(std::coroutine_handle<> task)

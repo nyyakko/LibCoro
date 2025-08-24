@@ -63,7 +63,7 @@ enum class Task<>::State { STARTED, RUNNING, AWAITING, RESUMED, FINISHED };
 
 class Scheduler
 {
-    enum class State { RUNNING, WAITING };
+    enum class State { RUNNING, WAITING, STOPPED };
 
 public:
     class Task
@@ -116,6 +116,7 @@ public:
     }
 
     void start();
+    void stop();
 
     void notify()
     {

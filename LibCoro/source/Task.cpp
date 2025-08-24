@@ -5,7 +5,7 @@
 
 void libcoro::Scheduler::start()
 {
-    while (true)
+    while (state_ != State::STOPPED)
     {
         std::unique_lock lock(mutex_);
         condition_.wait(lock, [&] () { return state_ == State::RUNNING; });
@@ -33,6 +33,12 @@ void libcoro::Scheduler::start()
 
         state_ = State::WAITING;
     }
+}
+
+void libcoro::Scheduler::stop()
+{
+    state_ = State::STOPPED;
+    notify();
 }
 
 template <>

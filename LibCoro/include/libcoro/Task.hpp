@@ -121,7 +121,7 @@ public:
     void notify()
     {
         std::scoped_lock lock(mutex_);
-        state_ = State::RUNNING;
+        state_.with([] (auto& state) { state = State::RUNNING; });
         condition_.notify_one();
     }
 

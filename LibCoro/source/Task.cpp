@@ -38,13 +38,13 @@ void libcoro::Scheduler::start()
             std::ignore = pool_.submit_task(task->handle());
         }
 
-        state_ = State::WAITING;
+        state_.with([] (auto& state) { state = State::WAITING; });
     }
 }
 
 void libcoro::Scheduler::stop()
 {
-    state_ = State::STOPPED;
+    state_.with([] (auto& state) { state = State::STOPPED; });
     notify();
 }
 

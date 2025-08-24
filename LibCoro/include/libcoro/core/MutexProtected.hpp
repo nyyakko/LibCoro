@@ -24,7 +24,7 @@ public:
         return *this;
     }
 
-    MutexProtected(T&& data)
+    explicit MutexProtected(T&& data)
         : data_(std::move(data))
         , mutex_ {}
     {}

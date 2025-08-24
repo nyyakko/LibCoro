@@ -44,8 +44,7 @@ void libcoro::Scheduler::start()
 
 void libcoro::Scheduler::stop()
 {
-    state_.with([] (auto& state) { state = State::STOPPED; });
-    notify();
+    notify(State::STOPPED);
 }
 
 template <>

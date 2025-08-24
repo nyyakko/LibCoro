@@ -63,6 +63,7 @@ enum class Task<>::State { STARTED, RUNNING, AWAITING, RESUMED, FINISHED };
 
 class Scheduler
 {
+public:
     enum class State { RUNNING, WAITING, STOPPED };
 
 public:
@@ -118,10 +119,10 @@ public:
     void start();
     void stop();
 
-    void notify()
+    void notify(State state)
     {
         std::scoped_lock lock(mutex_);
-        state_.with([] (auto& state) { state = State::RUNNING; });
+        state_.with([=] (auto& state_) { state_ = state; });
         condition_.notify_one();
     }
 
@@ -210,7 +211,7 @@ struct Task<T>::promise_type
             continuation->set_state(libcoro::Task<>::State::RESUMED);
         }
 
-        Scheduler::the().notify();
+        Scheduler::the().notify(Scheduler::State::RUNNING);
 
         return std::suspend_always {};
     }

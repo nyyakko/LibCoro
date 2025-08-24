@@ -188,7 +188,7 @@ struct Task<T>::promise_type
     auto return_value(U&& value)
         requires std::constructible_from<value_t, U>
     {
-        result = std::forward<U>(value);
+        std::construct_at<value_t>(std::addressof(result), std::forward<U>(value));
     }
 
     auto return_value(value_t&& value)

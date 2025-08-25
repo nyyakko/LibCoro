@@ -35,7 +35,7 @@ void libcoro::Scheduler::start()
         for (auto& task : tasks)
         {
             task->set_state(libcoro::Task<>::State::RUNNING);
-            std::ignore = pool_.submit_task(task->handle());
+            pool_.submit_task(task->handle());
         }
 
         state_.with([] (auto& state) { state = State::WAITING; });

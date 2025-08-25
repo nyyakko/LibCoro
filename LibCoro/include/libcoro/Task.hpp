@@ -3,10 +3,13 @@
 #include "core/MutexProtected.hpp"
 #include "core/ThreadPool.hpp"
 
+#include <algorithm>
+#include <condition_variable>
 #include <coroutine>
 #include <memory>
 #include <type_traits>
 #include <variant>
+#include <vector>
 
 namespace libcoro {
 
@@ -105,11 +108,6 @@ public:
     };
 
 public:
-    Scheduler()
-        : pool_(8)
-    {}
-
-public:
     static Scheduler& the()
     {
         static Scheduler the {};
@@ -167,7 +165,7 @@ public:
     }
 
 private:
-    core::BS::thread_pool<> pool_;
+    core::ThreadPool<8> pool_;
     core::MutexProtected<std::vector<std::shared_ptr<Task>>> tasks_;
     core::MutexProtected<State> state_;
     std::mutex mutex_;

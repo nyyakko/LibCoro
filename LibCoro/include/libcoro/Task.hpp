@@ -108,6 +108,12 @@ public:
     };
 
 public:
+    ~Scheduler()
+    {
+        stop();
+    }
+
+public:
     static Scheduler& the()
     {
         static Scheduler the {};
